@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Plant Disease Rover Control</title>
+    <link rel="stylesheet" href="/static/style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700&display=swap" rel="stylesheet">
+</head>
+
+<body>
+    <div class="overlay"></div>
+
+    <div class="container">
+        <header>
+            <div class="system-header">
+                <div class="status-indicator">
+                    <div class="dot active"></div>
+                    <span id="status-text">System Armed</span>
+                </div>
+                <div class="mode-selector">
+                    <button class="mode-btn active" id="mode-manual">Manual</button>
+                    <button class="mode-btn" id="mode-auto">Auto</button>
+                </div>
+            </div>
+            <h1>Remote Control Unit</h1>
+        </header>
+
+        <main>
+            <!-- Movement Controls -->
+            <section class="control-box movement">
+                <div class="control-header">
+                    <h2>Movement</h2>
+                </div>
+                <div class="joystick-ui">
+                    <button class="btn move-btn" id="btn-up" data-dir="forward">▲</button>
+                    <div class="middle-row">
+                        <button class="btn move-btn" id="btn-left" data-dir="left">◀</button>
+                        <button class="btn move-btn" id="btn-right" data-dir="right">▶</button>
+                    </div>
+                    <button class="btn move-btn" id="btn-down" data-dir="backward">▼</button>
+                </div>
+                <div class="stop-row">
+                    <button class="btn big-stop-btn" id="btn-stop-global">STOP MOVEMENT</button>
+                </div>
+            </section>
+
+            <!-- Emergency Controls -->
+            <section class="control-box system">
+                <div class="control-header">
+                    <h2>System Control</h2>
+                </div>
+                <div class="system-row">
+                    <button class="btn emergency-btn" id="btn-emergency">EMERGENCY STOP</button>
+                    <button class="btn reset-btn" id="btn-reset">RESET SYSTEM</button>
+                </div>
+            </section>
+
+            <!-- Logs -->
+            <section class="control-box logs">
+                <div class="control-header">
+                    <h2>System Logs</h2>
+                </div>
+                <div id="log-container" class="log-display">
+                    <!-- Logs will appear here -->
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <script src="/static/script.js"></script>
+</body>
+
+</html>

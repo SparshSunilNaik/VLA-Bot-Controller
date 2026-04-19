@@ -1,0 +1,29 @@
+================================================================================
+ PLANT DISEASE ROVER - COMMAND REFERENCE
+================================================================================
+
+1. REMOTE WEB CONTROL (Recommended)
+   Runs the web server on port 9999. Access via http://<IP>:9999
+   -----------------------------------------------------------------------------
+   Command: ./rover_env/bin/python3 server.py
+
+2. LOCAL GUI CONTROL (Original)
+   Runs the PyQt5 fullscreen interface on the host device.
+   -----------------------------------------------------------------------------
+   Command: ./rover_env/bin/python3 main.py
+
+3. HARDWARE TESTS
+   -----------------------------------------------------------------------------
+   Relay/Pump Test:   ./rover_env/bin/python3 test_relay.py
+   Camera Check:      ./rover_env/bin/python3 verifycam.py
+
+4. PROJECT SETUP (If needed)
+   -----------------------------------------------------------------------------
+   Install Requirements: ./rover_env/bin/python3 -m pip install -r requirements.txt
+
+================================================================================
+ NOTE: Always use the 'rover_env' python to ensure dependencies are found.
+================================================================================
+
+
+./rover_env/bin/python3 server.py 

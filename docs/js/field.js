@@ -179,6 +179,7 @@
       if (R.quirks && (dir === "left" || dir === "right")) dir = dir === "left" ? "right" : "left";
       R.execute(dir);
     };
+    if (dist < 0.6) { if (autoSpray) { R.spray("stop"); autoSpray = null; } route("backward"); return; }
     if (dist < 1.25 && Math.abs(diff) < 0.4) {
       if (!t.scanned) { scan(); return; }
       var want = t.kind === "blight" ? 1 : 2;
@@ -186,8 +187,12 @@
       return;
     }
     if (autoSpray) { R.spray("stop"); autoSpray = null; }
-    if (Math.abs(diff) > 0.3) route(diff < 0 ? "left" : "right");
-    else route(dist < 0.9 ? "backward" : "forward");
+    if (Math.abs(diff) > 0.3) {
+      route(diff < 0 ? "left" : "right");
+      // a full step turns about 0.78 rad, so cut small turns short to avoid see-sawing
+      var need = Math.abs(diff) / TURN * 1000;
+      if (need < R.STEP_DURATION - 20) setTimeout(function () { if (R.mode === "auto") R.execute("stop"); }, need);
+    } else route("forward");
   }
   R.on("mode", function (m) { if (m !== "auto") autoSpray = null; });
 

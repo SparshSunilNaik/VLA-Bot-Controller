@@ -28,9 +28,6 @@
       : R.motors.left === -1 && R.motors.right === 1 ? "left"
       : R.motors.left === 1 && R.motors.right === -1 ? "right" : null;
     dirBtns.forEach(function (b) { b.classList.toggle("is-active", b.dataset.dir === dir); });
-    document.querySelectorAll(".spray-btn").forEach(function (b) {
-      b.classList.toggle("is-active", (b.dataset.spray === "1" && R.blur) || (b.dataset.spray === "2" && R.mold));
-    });
   }
   R.on("state", paint);
 
@@ -52,24 +49,11 @@
     b.addEventListener("keydown", function (e) { if ((e.key === "Enter" || e.key === " ") && !e.repeat) { e.preventDefault(); e.stopPropagation(); R.mode !== "auto" && R.execute(b.dataset.dir); } });
   });
 
-  /* ---------- spray: press sends {id}, release sends {id: "stop"} ---------- */
-  var activeSpray = {};
-  function sprayDown(id) { if (activeSpray[id]) return; activeSpray[id] = true; R.spray(id); }
-  function sprayUp(id) { if (!activeSpray[id]) return; delete activeSpray[id]; R.spray("stop"); }
-  document.querySelectorAll(".spray-btn").forEach(function (b) {
-    var id = Number(b.dataset.spray);
-    b.addEventListener("pointerdown", function (e) { e.preventDefault(); b.setPointerCapture && b.setPointerCapture(e.pointerId); sprayDown(id); });
-    ["pointerup", "pointercancel", "lostpointercapture"].forEach(function (ev) { b.addEventListener(ev, function () { sprayUp(id); }); });
-    b.addEventListener("keydown", function (e) { if ((e.key === "Enter" || e.key === " ") && !e.repeat) { e.preventDefault(); e.stopPropagation(); sprayDown(id); } });
-    b.addEventListener("keyup", function (e) { if (e.key === "Enter" || e.key === " ") { e.stopPropagation(); sprayUp(id); } });
-  });
-
-  document.getElementById("btn-scan").addEventListener("click", function () { F.scan(); });
   document.getElementById("btn-estop").addEventListener("click", function () { endAll(); R.execute("stop"); R.ctrl.emergency(); });
   document.getElementById("btn-reset").addEventListener("click", function () { R.ctrl.clear_emergency(); });
   document.getElementById("quirks").addEventListener("change", function (e) {
     R.quirks = e.target.checked;
-    R.log(R.quirks ? "[SIM] replaying server.py quirks" : "[SIM] quirks off", "api");
+    R.log(R.quirks ? "[SIM] left and right routes swapped, like server.py" : "[SIM] left and right routes straight", "api");
   });
 
   /* ---------- mode ---------- */
@@ -80,7 +64,7 @@
     mBtn.setAttribute("aria-pressed", m === "manual");
     aBtn.setAttribute("aria-pressed", m === "auto");
     dirBtns.forEach(function (b) { b.disabled = m === "auto"; });
-    if (m === "auto") F.toast("Autopilot demo: it hunts sick plants on its own");
+    if (m === "auto") F.toast("Autopilot demo: it plans its own way to the dock");
   }
   mBtn.addEventListener("click", function () { setMode("manual"); });
   aBtn.addEventListener("click", function () { setMode("auto"); });
@@ -98,18 +82,15 @@
       if (isArrow && !simVisible) return;
       e.preventDefault();
       if (!e.repeat) startHold("key-" + k, KEYS[k]);
-    } else if (k === "1" || k === "2") { if (!e.repeat) sprayDown(Number(k)); }
-    else if (k === "q") { if (!e.repeat) F.scan(); }
-    else if (k === "x") { if (R.mode !== "auto") R.execute("stop"); }
+    } else if (k === "x") { if (R.mode !== "auto") R.execute("stop"); }
     else if (k === "escape") { endAll(); R.execute("stop"); R.ctrl.emergency(); }
     else if (k === "r") { R.ctrl.clear_emergency(); }
   });
   document.addEventListener("keyup", function (e) {
     var k = e.key.toLowerCase();
     if (KEYS[k]) endHold("key-" + k);
-    if (k === "1" || k === "2") sprayUp(Number(k));
   });
-  window.addEventListener("blur", function () { endAll(); Object.keys(activeSpray).forEach(function (id) { sprayUp(Number(id)); }); });
+  window.addEventListener("blur", endAll);
 
   paint();
 })();

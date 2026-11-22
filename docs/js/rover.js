@@ -1,4 +1,4 @@
-/* A browser port of controller.py (RoverController) and the step logic in server.py.
+/* A browser port of the motor side of controller.py (RoverController) and the step logic in server.py.
    Everything else on the page talks to the rover through window.Rover. */
 (function () {
   var STEP_DURATION = 300; // ms, server.py STEP_DURATION = 0.3
@@ -14,14 +14,12 @@
   var R = {
     STEP_DURATION: STEP_DURATION,
     motors: { left: 0, right: 0 },   // -1 backward, 0 stopped, 1 forward
-    pump: false, blur: false, mold: false,
     emergency: false,
     mode: "manual",
     quirks: false,
     stepId: 0,
     logs: [],
     segments: [],      // motor timeline for the tape
-    spraySegs: [],     // pump timeline
     on: on, emit: emit, now: now
   };
 
@@ -51,15 +49,6 @@
     openMotorSeg(kind);
     emit("state");
   }
-  function sprayOn() {
-    var open = R.spraySegs[R.spraySegs.length - 1];
-    if (!open || open.t1 !== null) R.spraySegs.push({ t0: now(), t1: null });
-    trim(R.spraySegs);
-  }
-  function sprayOff() {
-    var open = R.spraySegs[R.spraySegs.length - 1];
-    if (open && open.t1 === null) open.t1 = now();
-  }
 
   /* ---------- controller.py ---------- */
   var ctrl = {
@@ -70,25 +59,8 @@
     stop: function (quiet) {
       R.motors.left = 0; R.motors.right = 0;
       closeMotorSeg(false);
-      R.pump = false; R.blur = false; R.mold = false;
-      sprayOff();
       if (!quiet) log("All stopped");
       emit("state");
-    },
-    stop_motors_only: function () {
-      R.motors.left = 0; R.motors.right = 0;
-      closeMotorSeg(false);
-      emit("state");
-    },
-    manual_spray_blur: function () {
-      if (R.emergency) return false;
-      R.pump = true; R.blur = true; sprayOn();
-      log("Spraying Fertilizer 1 (Blight)"); emit("state"); return true;
-    },
-    manual_spray_mold: function () {
-      if (R.emergency) return false;
-      R.pump = true; R.mold = true; sprayOn();
-      log("Spraying Fertilizer 2 (Mold)"); emit("state"); return true;
     },
     emergency: function () {
       R.emergency = true;
@@ -117,20 +89,9 @@
     var ran = ctrl[map[action]]();
 
     setTimeout(function () {
-      if (R.stepId === thisId) {
-        // The real delayed_stop calls ctrl.stop(), which also shuts the pump and valves.
-        if (R.quirks) ctrl.stop(); else if (R.motors.left || R.motors.right) ctrl.stop_motors_only();
-      }
+      if (R.stepId === thisId) ctrl.stop();
     }, STEP_DURATION);
     return ran;
-  };
-
-  /* /api/spray */
-  R.spray = function (id) {
-    if (id === 1 || id === "1") return ctrl.manual_spray_blur();
-    if (id === 2 || id === "2") return ctrl.manual_spray_mold();
-    if (id === "stop") { ctrl.stop(); return true; }
-    return null;
   };
 
   R.status = function () {

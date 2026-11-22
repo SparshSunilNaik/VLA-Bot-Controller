@@ -11,21 +11,14 @@
     { verb: "POST", path: "/api/backward", note: "One 0.3 s step backward.", run: function () { R.execute("backward"); return ok(); } },
     { verb: "POST", path: "/api/left", note: "One 0.3 s step left. server.py actually calls move_right() here, likely to make up for how the motors are wired. Tick the quirks box to replay that.", run: function () { R.execute("left"); return ok(); } },
     { verb: "POST", path: "/api/right", note: "One 0.3 s step right, which calls move_left() in server.py.", run: function () { R.execute("right"); return ok(); } },
-    { verb: "POST", path: "/api/stop", note: "Stops motors, pump and both valves at once.", run: function () { R.execute("stop"); return ok(); } },
+    { verb: "POST", path: "/api/stop", note: "Stops both motors right away and bumps the step counter, so no older step can restart anything.", run: function () { R.execute("stop"); return ok(); } },
     { verb: "POST", path: "/api/move", note: "One route for all directions. Anything outside the five names gets a 400.",
       bodies: [{ direction: "forward" }, { direction: "left" }, { direction: "stop" }, { direction: "sideways" }],
       run: function (b) {
         if (["forward", "backward", "left", "right", "stop"].indexOf(b.direction) >= 0) { R.execute(b.direction); return ok({ direction: b.direction }); }
         return bad("Invalid direction");
       } },
-    { verb: "POST", path: "/api/spray", note: "No step timer here: a valve stays open until you send {\"id\": \"stop\"}, which also stops the motors.",
-      bodies: [{ id: 1 }, { id: 2 }, { id: "stop" }, { id: 3 }],
-      run: function (b) {
-        var r = R.spray(b.id);
-        if (r === null) return bad("Invalid spray ID");
-        return ok({ spray_id: b.id });
-      } },
-    { verb: "POST", path: "/api/emergency", note: "Latches the lockout. Move and spray calls still answer 200 but do nothing until a reset.", run: function () { R.ctrl.emergency(); return ok({ message: "Emergency stop active" }); } },
+    { verb: "POST", path: "/api/emergency", note: "Latches the lockout. Move calls still answer 200 but do nothing until a reset.", run: function () { R.ctrl.emergency(); return ok({ message: "Emergency stop active" }); } },
     { verb: "POST", path: "/api/reset", note: "Clears the lockout. It doesn't move anything.", run: function () { R.ctrl.clear_emergency(); return ok({ message: "System reset" }); } },
     { verb: "GET", path: "/api/status", note: "The web panel polls this every second. It returns the last 20 log lines.", run: function () { return [200, R.status()]; } }
   ];

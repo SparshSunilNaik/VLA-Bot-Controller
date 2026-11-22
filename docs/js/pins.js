@@ -16,26 +16,6 @@
       gotcha: "<b>Pin mismatch.</b> <code>config.py</code> names IN1 to IN4 as 5, 6, 20, 16, and <code>hardware/motor_gpiozero.py</code> wires the left motor the other way round (forward 20, backward 16). The server uses <code>controller.py</code>, shown here."
     },
     {
-      id: "relays", name: "Pump and valves", color: "tomato", file: "controller.py",
-      blurb: "One pump and two solenoid valves on a relay board. They are active low: the pin goes LOW to switch a relay on.",
-      lowActive: true,
-      pins: [
-        { bcm: 17, role: "Pump relay", live: function () { return R.pump; } },
-        { bcm: 27, role: "Valve 1, Blight tank", live: function () { return R.blur; } },
-        { bcm: 22, role: "Valve 2, Mold tank", live: function () { return R.mold; } }
-      ],
-      gotcha: "<b>Hold a spray button</b> and watch 17 and one of 27 or 22 drop LOW together. The code calls the blight output <code>blur</code>."
-    },
-    {
-      id: "servos", name: "Nozzle servos", color: "plum", file: "hardware/servo_spray.py",
-      blurb: "Two hobby servos aim the nozzle: X swings left and right to plus or minus 0.6, Y nods up and down. An auto sweep goes up 0.6 s, down 0.6 s, centre 0.4 s.",
-      pins: [
-        { bcm: 12, role: "Servo X, left and right" },
-        { bcm: 13, role: "Servo Y, up and down" }
-      ],
-      gotcha: "<b>Two answers for servo X.</b> <code>config.py</code> says GPIO 18, <code>servo_spray.py</code> opens GPIO 12. Not used by the web server yet."
-    },
-    {
       id: "stepper", name: "Pan stepper", color: "sky", file: "hardware/stepper_gpiozero.py",
       blurb: "A four-coil stepper on a driver board turns the camera. It runs an 8-phase half-step sequence, 10 ms per phase, for up to 400 cycles, so one pan lasts up to 32 seconds unless stopped.",
       pins: [
@@ -129,9 +109,7 @@
 
   function level(part, pin) {
     if (!pin.live) return { text: "not driven", cls: "" };
-    var on = pin.live();
-    if (part.lowActive) return on ? { text: "LOW, on", cls: "lo" } : { text: "HIGH, off", cls: "hi" };
-    return on ? { text: "HIGH", cls: "hi" } : { text: "LOW", cls: "" };
+    return pin.live() ? { text: "HIGH", cls: "hi" } : { text: "LOW", cls: "" };
   }
 
   function paint() {

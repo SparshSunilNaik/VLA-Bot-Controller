@@ -1,4 +1,4 @@
-/* Rolling timeline of motor steps and the pump. */
+/* Rolling timeline of motor steps. */
 (function () {
   var R = window.Rover, F = window.Field;
   var canvas = document.getElementById("tape-canvas");
@@ -44,13 +44,12 @@
     ctx.textBaseline = "middle";
     ctx.fillStyle = colors["ink-soft"];
     ctx.fillText("motors", 10, 46);
-    ctx.fillText("pump", 10, 104);
 
     // second grid
     ctx.strokeStyle = colors["ink-soft"]; ctx.globalAlpha = 0.25; ctx.lineWidth = 1;
     for (var s = 0; s <= 6; s++) {
       var gx = X(now - s * 1000);
-      ctx.beginPath(); ctx.moveTo(gx, 14); ctx.lineTo(gx, H - 22); ctx.stroke();
+      ctx.beginPath(); ctx.moveTo(gx, 14); ctx.lineTo(gx, H - 24); ctx.stroke();
     }
     ctx.globalAlpha = 1;
     ctx.fillStyle = colors["ink-soft"];
@@ -91,15 +90,6 @@
       ctx.beginPath(); ctx.moveTo(px, 22); ctx.lineTo(px - 5, 13); ctx.lineTo(px + 5, 13); ctx.closePath(); ctx.fill();
     });
 
-    // pump
-    R.spraySegs.forEach(function (sg) {
-      var t1 = sg.t1 === null ? now : sg.t1;
-      if (t1 < now - WINDOW) return;
-      var x0 = Math.max(pad, X(sg.t0)), x1 = X(t1);
-      ctx.fillStyle = colors.tomato;
-      rr(x0, 90, Math.max(3, x1 - x0), 28, 8); ctx.fill();
-      ctx.lineWidth = 2.5; ctx.strokeStyle = colors.line; ctx.stroke();
-    });
   }
   requestAnimationFrame(draw);
 

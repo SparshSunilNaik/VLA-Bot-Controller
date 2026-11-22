@@ -3,8 +3,8 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Rover Remote</title>
-  <meta name="description" content="Drive a plant-doctor rover from your browser. A playable tour of VLA-Bot-Controller: Flask step control, L298N motors, two spray tanks, a ResNet-18 leaf classifier and a PS5 pad.">
+  <title>VLA Bot</title>
+  <meta name="description" content="Drive the VLA Bot through a furnished room from your browser. A playable tour of VLA-Bot-Controller: Flask step control, L298N motors, emergency stop and a PS5 pad.">
   <meta name="theme-color" content="#ffc61a">
   <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect x='6' y='14' width='52' height='36' rx='10' fill='%23ffc61a' stroke='%231b1638' stroke-width='5'/%3E%3Ccircle cx='22' cy='32' r='6' fill='%231b1638'/%3E%3Ccircle cx='42' cy='32' r='6' fill='%231b1638'/%3E%3C/svg%3E">
   <script>
@@ -25,14 +25,13 @@
 
 <header class="top">
   <div class="wrap">
-    <a class="logo" href="#drive" aria-label="Rover Remote home">
+    <a class="logo" href="#drive" aria-label="VLA Bot home">
       <svg viewBox="0 0 64 64" aria-hidden="true"><rect x="6" y="16" width="52" height="34" rx="10" fill="#ffc61a" stroke="#1b1638" stroke-width="5"/><rect x="24" y="6" width="16" height="12" rx="4" fill="#ff4f2e" stroke="#1b1638" stroke-width="4"/><circle cx="21" cy="33" r="6" fill="#1b1638"/><circle cx="43" cy="33" r="6" fill="#1b1638"/><circle cx="23" cy="31" r="2" fill="#fff"/><circle cx="45" cy="31" r="2" fill="#fff"/></svg>
-      <span>Rover Remote</span>
+      <span>VLA Bot</span>
     </a>
     <nav class="nav" aria-label="Sections">
       <a href="#tape">Steps</a>
       <a href="#wiring">Wiring</a>
-      <a href="#vision">Leaf doctor</a>
       <a href="#pad">PS5 pad</a>
       <a href="#api">API</a>
       <a href="#run">Run it</a>
@@ -51,14 +50,14 @@
   <div class="hero">
     <div class="wrap">
       <div class="hero-grid">
-        <h1>Drive the <span class="hl">plant</span> <span class="hl hl2">doctor</span></h1>
+        <h1>Drive the <span class="hl">VLA</span> <span class="hl hl2">Bot</span></h1>
         <div>
-          <p class="lede"><strong>VLA-Bot-Controller</strong> runs a Raspberry Pi farm rover: a Flask server on port 9999 nudges two DC motors in 0.3&nbsp;second steps, two relay valves spray blight or mold treatment, and a ResNet-18 knows 38 leaf conditions. This page runs the same logic in your browser. Go cure some tomatoes.</p>
+          <p class="lede"><strong>VLA-Bot-Controller</strong> runs a Raspberry Pi rover: a Flask server on port 9999 nudges two DC motors through an L298N in 0.3&nbsp;second steps, from a phone, a touch screen or a PS5 pad. This page runs the same step logic in your browser. Get the bot to its charging dock without crashing into the furniture.</p>
           <div class="stickers" aria-label="Stack">
             <span class="sticker"><i style="background:var(--sun)"></i>Flask + CORS</span>
             <span class="sticker"><i style="background:var(--sky)"></i>gpiozero</span>
             <span class="sticker"><i style="background:var(--tomato)"></i>L298N</span>
-            <span class="sticker"><i style="background:var(--leaf)"></i>ResNet-18</span>
+            <span class="sticker"><i style="background:var(--leaf)"></i>Raspberry Pi</span>
             <span class="sticker"><i style="background:var(--plum)"></i>pygame PS5</span>
             <span class="sticker"><i style="background:var(--ink)"></i>PyQt5</span>
           </div>
@@ -70,14 +69,14 @@
   <div class="wrap">
     <div class="card sim" id="sim">
       <div class="field-wrap">
-        <canvas id="field" width="960" height="600" aria-label="Top-down crop field with the rover. Drive with arrow keys or WASD."></canvas>
         <div class="field-hud">
-          <span class="hud-pill" id="hud-cured">Cured <b>0</b>/0</span>
+          <span class="hud-pill" id="hud-docks">Docked <b>0</b></span>
+          <span class="hud-pill" id="hud-bumps">Bumps <b>0</b></span>
           <span class="hud-pill" id="hud-motor">L 0 R 0</span>
           <span class="hud-pill" id="hud-step">step #0</span>
         </div>
+        <canvas id="field" width="960" height="600" aria-label="Top-down tiled room with furniture and the bot. Drive with arrow keys or WASD."></canvas>
         <div class="estop-overlay" aria-hidden="true"><span>Emergency stop</span></div>
-        <div class="scan-card" id="scan-card" role="status" aria-live="polite"></div>
       </div>
       <div class="console">
         <div class="status-row">
@@ -88,6 +87,7 @@
             <button type="button" id="mode-auto" aria-pressed="false">Auto</button>
           </div>
         </div>
+        <p class="goal"><span class="goal-dot" aria-hidden="true"></span>Steer to the glowing green dock. Furniture doesn't move, and every bump is counted.</p>
         <div class="pad-grid" role="group" aria-label="Movement">
           <button class="btn" type="button" data-dir="forward" aria-label="Forward">&#9650;</button>
           <button class="btn" type="button" data-dir="left" aria-label="Left">&#9664;</button>
@@ -95,17 +95,10 @@
           <button class="btn" type="button" data-dir="right" aria-label="Right">&#9654;</button>
           <button class="btn" type="button" data-dir="backward" aria-label="Backward">&#9660;</button>
         </div>
-        <div class="row2">
-          <button class="btn tomato spray-btn" type="button" data-spray="1">Spray 1<small>Blight tank, hold</small></button>
-          <button class="btn sky spray-btn" type="button" data-spray="2">Spray 2<small>Mold tank, hold</small></button>
-        </div>
-        <div class="row2">
-          <button class="btn sun" type="button" id="btn-scan">Scan leaf</button>
-          <button class="btn" type="button" id="btn-reset">Reset system</button>
-        </div>
         <button class="btn estop" type="button" id="btn-estop">Emergency stop</button>
-        <label class="quirk"><input type="checkbox" id="quirks"> <span>Replay <code>server.py</code> quirks: the left and right routes are swapped, and every step's delayed stop also shuts the pump</span></label>
-        <div class="keys"><kbd>W</kbd><kbd>A</kbd><kbd>S</kbd><kbd>D</kbd> or arrows to step, <kbd>Q</kbd> scan, hold <kbd>1</kbd>/<kbd>2</kbd> spray, <kbd>X</kbd> stop, <kbd>Esc</kbd> e-stop, <kbd>R</kbd> reset</div>
+        <button class="btn" type="button" id="btn-reset">Reset system</button>
+        <label class="quirk"><input type="checkbox" id="quirks"> <span>Replay the <code>server.py</code> quirk: the <code>left</code> route calls <code>move_right()</code> and the other way round</span></label>
+        <div class="keys"><kbd>W</kbd><kbd>A</kbd><kbd>S</kbd><kbd>D</kbd> or arrows to step (hold to keep rolling), <kbd>X</kbd> stop, <kbd>Esc</kbd> e-stop, <kbd>R</kbd> reset</div>
       </div>
       <div class="sim-log"><div class="log" id="log" aria-live="polite" aria-label="Server log"></div></div>
     </div>
@@ -124,13 +117,12 @@
           <button class="btn small" type="button" id="tape-slow">Slow right: 4 presses, 600 ms apart</button>
           <span class="note">Last 6 seconds, newest on the right</span>
         </div>
-        <canvas id="tape-canvas" width="1100" height="150" aria-label="Timeline of motor steps"></canvas>
+        <canvas id="tape-canvas" width="1100" height="104" aria-label="Timeline of motor steps"></canvas>
         <div class="legend">
           <span><i style="background:var(--leaf)"></i>forward</span>
           <span><i style="background:var(--sky)"></i>backward</span>
           <span><i style="background:var(--plum)"></i>left</span>
           <span><i style="background:var(--sun)"></i>right</span>
-          <span><i style="background:var(--tomato)"></i>spray</span>
           <span><i style="background:repeating-linear-gradient(90deg,var(--ink) 0 2px,transparent 2px 5px)"></i>handed over to a newer step</span>
         </div>
       </div>
@@ -152,8 +144,8 @@
         <div class="prose">
           <h3>Why it feels smooth</h3>
           <p>Press faster than 0.3&nbsp;s and each new step steals the stop from the one before, so the motors never pause. Press slower and you get little hops with gaps in between. A dropped connection can never leave the rover driving off on its own.</p>
-          <h3>The catch</h3>
-          <p><code>ctrl.stop()</code> stops everything, pump and valves included. Tick the quirks box above, hold a spray and tap forward: the spray dies 0.3&nbsp;s later.</p>
+          <h3>Squeezing past a chair</h3>
+          <p>Single taps are how you thread tight gaps: one tap forward is about half a tile, and one tap left or right turns the bot roughly 45 degrees. Hold a key and the steps chain into a smooth drive.</p>
         </div>
       </div>
     </div>
@@ -164,7 +156,7 @@
       <div class="sec-head">
         <span class="sec-num">02</span>
         <h2>Live pin board</h2>
-        <p>Every GPIO the code touches, on a real 40-pin header. Pins light up as you drive and spray. Pick a part to see its wiring.</p>
+        <p>Every GPIO the code touches, on a real 40-pin header. Pins light up as you drive. Pick a part to see its wiring.</p>
       </div>
       <div class="wiring">
         <div class="card board">
@@ -176,32 +168,10 @@
     </div>
   </section>
 
-  <section class="block" id="vision">
-    <div class="wrap">
-      <div class="sec-head">
-        <span class="sec-num">03</span>
-        <h2>Leaf doctor</h2>
-        <p><code>vision/detector.py</code> loads a fine-tuned ResNet-18 with a 38-way head and the PlantVillage labels from <code>classes.json</code>. Pick a leaf and step through what it does to the picture.</p>
-      </div>
-      <div class="vision">
-        <div class="card pipe" id="pipe"></div>
-        <div class="card leaf-lab">
-          <div class="leaf-stage">
-            <svg id="leaf-svg" viewBox="0 0 150 150" aria-label="Leaf preview"></svg>
-            <div class="topk" id="topk" aria-live="polite"></div>
-          </div>
-          <div class="verdict" id="verdict"></div>
-          <div class="classes" id="classes" role="group" aria-label="The 38 classes"></div>
-          <p class="fine">The scores are made up in your browser to show the shape of the output; the 43&nbsp;MB <code>finetuned_resnet.pth</code> doesn't run here. In the repo the detector isn't wired into the server yet, and spraying stays a human decision.</p>
-        </div>
-      </div>
-    </div>
-  </section>
-
   <section class="block" id="pad">
     <div class="wrap">
       <div class="sec-head">
-        <span class="sec-num">04</span>
+        <span class="sec-num">03</span>
         <h2>Plug in a controller</h2>
         <p><code>ps5_controller.py</code> polls a DualSense with pygame 20 times a second. Connect any gamepad to this page and it drives the rover above with the same mapping.</p>
       </div>
@@ -221,7 +191,7 @@
   <section class="block" id="api">
     <div class="wrap">
       <div class="sec-head">
-        <span class="sec-num">05</span>
+        <span class="sec-num">04</span>
         <h2>Poke the API</h2>
         <p>The same Flask routes, answered by a fake server in this tab. Every request really moves the rover up top.</p>
       </div>
@@ -247,9 +217,9 @@
   <section class="block" id="run">
     <div class="wrap">
       <div class="sec-head">
-        <span class="sec-num">06</span>
+        <span class="sec-num">05</span>
         <h2>Run it on a real Pi</h2>
-        <p>Raspberry Pi with an L298N, two DC motors, a pump and two solenoid valves on relays. Optional: a DualSense paired over Bluetooth and a USB camera.</p>
+        <p>A Raspberry Pi, an L298N driver board and two DC motors. Optional: a DualSense paired over Bluetooth and a USB camera.</p>
       </div>
       <div class="steps">
         <div class="card step">
@@ -269,9 +239,8 @@ pip install flask flask-cors gpiozero lgpio pygame</pre><button class="copy" typ
         </div>
         <div class="card step">
           <h3>Or go local</h3>
-          <p>A fullscreen PyQt5 touch panel with hold-to-drive buttons, plus quick hardware checks.</p>
+          <p>A fullscreen PyQt5 touch panel with hold-to-drive buttons, plus a quick camera check.</p>
           <div class="cmd"><pre id="c3">python3 main.py        # touch GUI
-python3 test_relay.py  # pump + valves
 python3 verifycam.py   # camera</pre><button class="copy" type="button" data-copy-from="c3">Copy</button></div>
         </div>
       </div>
@@ -281,7 +250,6 @@ python3 verifycam.py   # camera</pre><button class="copy" type="button" data-cop
           <strong>Good to know before you wire it up</strong>
           <ul>
             <li><code>requirements.txt</code> is a whole ROS 2 environment with editable installs from someone's home folder, so the short pip line above is the easier route.</li>
-            <li>The relays are active low: the code drives the pin LOW to switch a valve on.</li>
             <li>The pin numbers in <code>config.py</code> don't all match the ones in the code. The pin board above follows what the code actually opens.</li>
             <li>The README lists <code>/api/status</code> as POST. The server only answers GET.</li>
           </ul>
@@ -293,7 +261,7 @@ python3 verifycam.py   # camera</pre><button class="copy" type="button" data-cop
 
 <footer>
   <div class="wrap">
-    <span class="bot">Beep. Spray. Repeat.</span>
+    <span class="bot">Beep. Dodge. Repeat.</span>
     A playable tour of <a href="https://github.com/SparshSunilNaik/VLA-Bot-Controller">VLA-Bot-Controller</a> by Sparsh Sunil Naik. Everything on this page runs in your browser; no rover was harmed.
   </div>
 </footer>
@@ -306,7 +274,6 @@ python3 verifycam.py   # camera</pre><button class="copy" type="button" data-cop
 <script src="js/console.js"></script>
 <script src="js/tape.js"></script>
 <script src="js/pins.js"></script>
-<script src="js/vision.js"></script>
 <script src="js/gamepad.js"></script>
 <script src="js/api.js"></script>
 <script src="js/copy.js"></script>

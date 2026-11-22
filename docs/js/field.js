@@ -278,7 +278,7 @@
   function drawRover(t) {
     ctx.save();
     ctx.translate(rover.x * T, rover.y * T); ctx.rotate(rover.h);
-    var L = T * 0.95, Wd = T * 0.74, lw = Math.max(2, T * 0.05);
+    var L = T * 1.15, Wd = T * 0.88, lw = Math.max(2, T * 0.05);
     ctx.lineWidth = lw; ctx.strokeStyle = colors.line;
     // wheels
     var spinL = R.motors.left, spinR = R.motors.right;

@@ -437,3 +437,6 @@ footer .bot { font-family: var(--display); font-size: 22px; color: var(--ink); d
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { animation: none !important; transition: none !important; scroll-behavior: auto !important; }
 }
+:root[data-theme="dark"] code { background: color-mix(in srgb, var(--plum) 32%, transparent); }
+:root[data-theme="dark"] .heads-up code { background: rgba(255, 255, 255, .6); }
+:root[data-theme="dark"] .curl code { background: none; }

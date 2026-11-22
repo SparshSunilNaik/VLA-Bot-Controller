@@ -4,24 +4,25 @@
   var svg = document.getElementById("ps-svg");
   svg.innerHTML =
     "<g stroke='var(--line)' stroke-width='4' stroke-linejoin='round'>" +
-    "<rect id='g-l2' x='104' y='16' width='72' height='26' rx='10' fill='var(--paper)' opacity='.5'/>" +
+    "<rect id='g-l2' x='104' y='16' width='72' height='26' rx='10' fill='#cfcbe3'/>" +
     "<rect id='g-r2' class='hit' x='344' y='16' width='72' height='26' rx='10' fill='var(--sky)'/>" +
-    "<rect id='g-l1' x='98' y='46' width='82' height='22' rx='9' fill='var(--paper)' opacity='.5'/>" +
+    "<rect id='g-l1' x='98' y='46' width='82' height='22' rx='9' fill='#cfcbe3'/>" +
     "<rect id='g-r1' class='hit' x='340' y='46' width='82' height='22' rx='9' fill='var(--tomato)'/>" +
-    "<path d='M120 72 Q260 44 400 72 Q470 84 490 170 Q505 250 450 264 Q410 272 380 222 L140 222 Q110 272 70 264 Q15 250 30 170 Q50 84 120 72Z' fill='var(--paper)'/>" +
-    "<rect x='205' y='80' width='110' height='66' rx='12' fill='var(--bg)'/>" +
-    "<g opacity='.45' fill='var(--bg)'><rect x='118' y='122' width='22' height='60' rx='5'/><rect x='99' y='141' width='60' height='22' rx='5'/>" +
+    "<path d='M120 72 Q260 44 400 72 Q470 84 490 170 Q505 250 450 264 Q410 272 380 222 L140 222 Q110 272 70 264 Q15 250 30 170 Q50 84 120 72Z' fill='#f4f2fb'/>" +
+    "<rect x='205' y='80' width='110' height='66' rx='12' fill='#1b1638'/>" +
+    "<g fill='#d9d6ea'><rect x='118' y='122' width='22' height='60' rx='5'/><rect x='99' y='141' width='60' height='22' rx='5'/>" +
     "<circle cx='396' cy='120' r='12'/><circle cx='396' cy='172' r='12'/><circle cx='370' cy='146' r='12'/><circle cx='422' cy='146' r='12'/>" +
     "<circle cx='325' cy='200' r='28'/><rect x='176' y='86' width='12' height='22' rx='5'/></g>" +
     "<rect id='g-opt' class='hit' x='332' y='86' width='12' height='22' rx='5' fill='var(--danger)'/>" +
     "<circle id='g-ps' class='hit' cx='260' cy='176' r='13' fill='var(--plum)'/>" +
     "<circle id='g-ls' cx='195' cy='200' r='30' fill='var(--leaf)'/>" +
-    "<circle id='g-knob' cx='195' cy='200' r='14' fill='var(--ink)' stroke-width='3'/>" +
+    "<circle id='g-knob' cx='195' cy='200' r='14' fill='#1b1638' stroke-width='3'/>" +
     "</g>" +
     "<g font-family='Martian Mono, monospace' font-size='12' font-weight='700' fill='var(--ink)'>" +
     "<text x='440' y='34'>R2</text><text x='440' y='62'>R1</text>" +
-    "<text x='352' y='70' text-anchor='middle'>OPTIONS</text><text x='260' y='206' text-anchor='middle'>PS</text>" +
-    "<text x='195' y='252' text-anchor='middle'>LEFT STICK</text></g>";
+    "</g><g font-family='Martian Mono, monospace' font-size='12' font-weight='700' fill='#1b1638'>" +
+    "<text x='338' y='124' text-anchor='middle'>OPT</text><text x='260' y='206' text-anchor='middle'>PS</text></g>" +
+    "<text x='260' y='252' text-anchor='middle' font-family='Martian Mono, monospace' font-size='12' font-weight='700' fill='var(--ink)'>LEFT STICK DRIVES</text>";
 
   var MAP = [
     { id: "ls", key: "Left stick", txt: "Up or down drives, left or right spins. Deadzone 0.2, acts past 0.5, up and down win." },

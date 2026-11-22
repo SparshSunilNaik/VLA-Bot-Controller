@@ -1,7 +1,7 @@
 /* Rolling timeline of motor steps and the pump. */
 (function () {
   var R = window.Rover, F = window.Field;
-  var canvas = document.getElementById("tape");
+  var canvas = document.getElementById("tape-canvas");
   var ctx = canvas.getContext("2d");
   var WINDOW = 6000;
   var presses = [];

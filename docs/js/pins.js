@@ -56,7 +56,7 @@
   var NS = "http://www.w3.org/2000/svg";
   var holder = document.getElementById("header-svg");
   var svg = document.createElementNS(NS, "svg");
-  svg.setAttribute("viewBox", "0 0 700 196");
+  svg.setAttribute("viewBox", "0 0 700 212");
   svg.setAttribute("role", "img");
   svg.setAttribute("aria-label", "Raspberry Pi 40-pin header");
   holder.appendChild(svg);
@@ -69,7 +69,7 @@
   el("rect", { x: 10, y: 48, width: 680, height: 100, rx: 16, fill: "var(--leaf)", stroke: "var(--line)", "stroke-width": 4, opacity: 0.18 });
   el("rect", { x: 22, y: 58, width: 656, height: 80, rx: 10, fill: "#16122b", stroke: "var(--line)", "stroke-width": 3 });
   var t1 = el("text", { x: 24, y: 172, "font-family": "Martian Mono, monospace", "font-size": 12, fill: "var(--ink-soft)" }); t1.textContent = "pin 1";
-  var t2 = el("text", { x: 676, y: 34, "text-anchor": "end", "font-family": "Martian Mono, monospace", "font-size": 12, fill: "var(--ink-soft)" }); t2.textContent = "pin 40";
+  var t2 = el("text", { x: 690, y: 18, "text-anchor": "end", "font-family": "Martian Mono, monospace", "font-size": 12, fill: "var(--ink-soft)" }); t2.textContent = "pin 40";
 
   var pinEls = {};
   for (var n = 1; n <= 40; n++) {
@@ -98,8 +98,8 @@
   // legend for power
   [["5V", "#e0464b"], ["3V3", "#f29a38"], ["GND", "#0b0916"], ["unused", "#6d6890"]].forEach(function (l, i) {
     var x = 120 + i * 120;
-    el("circle", { cx: x, cy: 184, r: 6, fill: l[1], stroke: "#000", "stroke-width": 1.5 });
-    var t = el("text", { x: x + 12, y: 188, "font-family": "Martian Mono, monospace", "font-size": 11, fill: "var(--ink-soft)" });
+    el("circle", { cx: x, cy: 200, r: 6, fill: l[1], stroke: "#000", "stroke-width": 1.5 });
+    var t = el("text", { x: x + 12, y: 204, "font-family": "Martian Mono, monospace", "font-size": 11, fill: "var(--ink-soft)" });
     t.textContent = l[0];
   });
 

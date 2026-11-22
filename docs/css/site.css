@@ -393,13 +393,13 @@ section.block { padding: 64px 0 20px; }
 .route-note { font-size: 13px; color: var(--ink-soft); padding: 0 14px 14px; }
 
 /* ---------- run ---------- */
-.steps { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 22px; counter-reset: s; }
+.steps { display: grid; grid-template-columns: minmax(0, 1.5fr) minmax(0, 1fr) minmax(0, 1fr); gap: 22px; counter-reset: s; }
 .step { padding: 18px; display: flex; flex-direction: column; gap: 10px; min-width: 0; }
 .step h3 { font-family: var(--display); font-weight: 400; font-size: 20px; margin: 0; }
 .step p { margin: 0; font-size: 15px; color: var(--ink-soft); }
-.cmd { position: relative; }
-.cmd pre { margin: 0; font: 12.5px/1.65 var(--mono); background: #120e26; color: #e8e4ff; padding: 12px 64px 12px 12px; border-radius: 10px; border: 3px solid var(--line); overflow-x: auto; }
-.cmd .copy { position: absolute; top: 8px; right: 8px; }
+.cmd { display: flex; flex-direction: column; gap: 6px; margin-top: auto; }
+.cmd pre { margin: 0; font: 12.5px/1.65 var(--mono); background: #120e26; color: #e8e4ff; padding: 12px; border-radius: 10px; border: 3px solid var(--line); overflow-x: auto; }
+.cmd .copy { align-self: flex-end; order: -1; }
 .heads-up { margin-top: 26px; padding: 18px 20px; display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 16px; align-items: start; background: var(--sun); color: #1b1638; }
 .heads-up svg { width: 40px; height: 40px; }
 .heads-up ul { margin: 6px 0 0; padding-left: 20px; }
